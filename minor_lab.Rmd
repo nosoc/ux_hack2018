@@ -12,6 +12,7 @@ credit_data <- read_csv("<insert_path>/credit_data_train.csv")
 ```
 
 ## Наши клиенты -- кто они?
+
 Постройте ряд графиков, чтобы ответить на этот вопрос
 
 ### Демографические характеристики клиентов, зарплаты, расходы т.д.
@@ -82,12 +83,12 @@ credit_data$random = sample(c("good","bad"), replace = T, size = nrow(credit_dat
 Посмотрим на результаты с помощью confusion matrix. Получить ее мы можем с помощью функции table()
 
 ```{r}
-table(credit_data$approve_all, credit_data$Status)
+table(credit_data$approve_all, credit_data$status)
 # 2616/(1030+2616)
 
-table(credit_data$reject_all, credit_data$Status)
+table(credit_data$reject_all, credit_data$status)
 
-table(credit_data$random, credit_data$Status)
+table(credit_data$random, credit_data$status)
 
 # подсчитайте точность модели
 ```
@@ -108,16 +109,16 @@ table(credit_data$random, credit_data$Status)
 
 ```{r}
 ?ifelse
-credit_data$profit = ifelse(credit_data$Status == "good", 
-                            credit_data$Amount*0.15, 
-                            credit_data$Amount*-1)
+credit_data$profit = ifelse(credit_data$status == "good", 
+                            credit_data$amount*0.15, 
+                            credit_data$amount*-1)
 ```
 
 Теперь мы можем рассчитать, сколько денег осталось в итоге, если мы даем кредит всем подряд.
 
 ```{r}
 credit_data %>% 
-  group_by(approve_all, Status) %>% 
+  group_by(approve_all, status) %>% 
   summarize(profit = sum(profit))
 
 # итоговый баланс
@@ -131,7 +132,7 @@ credit_data %>%
 ```{r}
 #  random model
 credit_data %>% 
-  group_by(random, Status) %>% 
+  group_by(random, status) %>% 
   summarize(profit = sum(profit))
 
 # итоговый баланс
@@ -177,10 +178,10 @@ complex_condition = (credit_data$id > 1000) & (credit_data$id < 2000)
 credit_data$modelX = ifelse(complex_condition, "good", "bad")
 
 # library(skimr)
-# credit_data %>% filter(Home=="owner") %>% filter(Status=="bad") %>% skim()
+# credit_data %>% filter(home=="owner") %>% filter(status=="bad") %>% skim()
 # 
 # credit_data %>% 
-#   group_by(modelX, Status) %>% 
+#   group_by(modelX, status) %>% 
 #   summarize(profit = sum(profit))
 # 
 # # итоговый баланс
